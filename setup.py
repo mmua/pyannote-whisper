@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 setup(
     name="pyannote-whisper",
     py_modules=["pyannote-whisper"],
-    version="1.0",
+    version="1.0.1",
     description="Speech Recognition plus diarization",
     readme="README.md",
     python_requires=">=3.7",
