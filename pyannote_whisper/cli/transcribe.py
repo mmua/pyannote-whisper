@@ -98,11 +98,14 @@ def cli():
     diarization = args.pop("diarization")
     if diarization:
         from pyannote.audio import Pipeline
+        hf_token = os.environ.get("HUGGINGFACE_TOKEN")
+        if not hf_token:
+            raise RuntimeError(
+                "Set HUGGINGFACE_TOKEN environment variable with your HuggingFace access token. "
+                "Create a free account at huggingface.co and generate a token with read access."
+            )
         pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization",
-                                            use_auth_token="HUGGINGFACE_CO_ACCOUNT_ACCESS_TOKEN")
-        # create huggingface.co free account and create your access token ^ with access to read repos
-        # also you will need to apply access forms for certain repos to get access to them (it's free too)
-        # you will see which repos requires this additional actions as access errors when try to use the program 
+                                            use_auth_token=hf_token)
 
     for audio_path in args.pop("audio"):
         result = transcribe(model, audio_path, temperature=temperature,**args)
@@ -120,7 +123,7 @@ def cli():
 
         elif output_format == "SRT":
             # save SRT
-           with open(os.path.join(output_dir, audio_basename + ".srt"), "w", encoding="utf-8") as file:
+            with open(os.path.join(output_dir, audio_basename + ".srt"), "w", encoding="utf-8") as file:
                 WriteSRT(output_dir).write_result(result, file=file)
 
         if diarization:
